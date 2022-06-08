@@ -11,6 +11,7 @@ objects:
       app.kubernetes.io/component: ${NAME}
       app.kubernetes.io/instance: ${NAME}
     name: ${NAME}
+    namespace: ${NAMESPACE}
   spec:
     output:
       to:
@@ -24,11 +25,7 @@ objects:
         name: my-git-secret
     strategy:
       dockerStrategy:
-        dockerfilePath: Dockerfile.openshift
-        from:
-          kind: ImageStreamTag
-          name: openjdk:1.8
-          namespace: openshift
+        dockerfilePath: Dockerfile
       type: Docker
     triggers:
     - type: ImageChange
