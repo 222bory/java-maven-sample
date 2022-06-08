@@ -1,36 +1,29 @@
-
-def applicationName = "java-maven-sample"
+#!/usr/bin/env groovy
+def appName = "java-maven-sample"
+def project="okd-test"
+def mavenHome
 
 node {
+    stage('Checkout') { 
+        git credentialsId: 'bory222', url: 'https://github.com/222bory/java-maven-sample.git'
+    }
     
-  stage 'Checkout'
-  checkout 'https://github.com/222bory/java-maven-sample.git'
-
-  stage 'Build and Test'
-  // Build using a plain docker container, not our local Dockerfile
-  def mvnContainer = docker.image('maven:3-jdk-8-alpine')
-  mvnContainer.inside('-v /m2repo:/m2repo') {
-      // Set up a shared Maven repo so we don't need to download all dependencies on every build.
-      writeFile file: 'settings.xml',
-         text: '<settings><localRepository>/m2repo</localRepository></settings>'
-      
-      // Build with maven settings.xml file that specs the local Maven repo.
-      sh 'mvn -B -s settings.xml package'
-   }
-        
-  stage 'Package Docker image'
-  // Build final releasable image using our Dockerfile and the docker.build cmd
-  // This container only contains the packaged jar, not the source or interim build steps
-  def img = docker.build('java-maven-sample:latest', '.')
+    stage('Source Build and Test') {
+        mavenHome = tool 'maven'
+        sh "'${mavenHome}/bin/mvn' -Dmaven.test.skip=true clean install"
+    }
     
-  stage name: 'Push Image', concurrency: 1
-  // All the tests passed. We can now retag and push the 'latest' image
-  docker.withRegistry('https://nexus.doyouevenco.de', 'nexus-admin') {
-     img.push('latest')
-  }
+    stage('Deploy Template') {
+        def status = sh(returnStdout: true, script: "oc process -f .openshift/template.yaml -p NAME=${appName} NAMESPACE=${project} | oc apply -f - ")
+        echo "${status}"
+    }
     
-   //Now we deploy
-  stage 'Deploy'
-
+    stage('Deploy Pod') {
+        openshift.withCluster() {
+            openshift.withProject("${project}") {
+                def dc = openshift.selector('dc',"${appName}")
+                dc.rollout().status()
+            }
+        }
+    }
 }
-
