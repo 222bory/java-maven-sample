@@ -1,8 +1,4 @@
-# Dockerfile
-FROM adoptopenjdk/openjdk11:alpine-slim
-
-COPY src/target/helloworld-1.0-SNAPSHOT.jar helloworld-1.0-SNAPSHOT.jar
-COPY run.sh run.sh
-RUN  chmod 755 run.sh
-
-CMD ["java", "-jar", "helloworld-1.0-SNAPSHOT.jar"]
+FROM openjdk:8-jdk-alpine
+ARG JAR_FILE=helloworld-1.0-SNAPSHOT.jar
+COPY ${JAR_FILE} myboot.jar
+ENTRYPOINT ["java","-jar","/myboot.jar"]
