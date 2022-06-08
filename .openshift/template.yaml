@@ -11,6 +11,7 @@ objects:
       app.kubernetes.io/component: ${NAME}
       app.kubernetes.io/instance: ${NAME}
     name: ${NAME}
+    namespace: ${NAMESPACE}
   spec:
     output:
       to:
