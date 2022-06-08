@@ -15,6 +15,7 @@ objects:
   spec:
     triggers:
     - type: ImageChange
+    - type: ConfigChange
     output:
       to:
         kind: ImageStreamTag
