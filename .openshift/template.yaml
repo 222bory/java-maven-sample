@@ -85,8 +85,6 @@ objects:
           ports:
           - containerPort: 8080
             protocol: TCP
-          - containerPort: 8443
-            protocol: TCP
         restartPolicy: Always
     triggers:
     - type: ConfigChange
