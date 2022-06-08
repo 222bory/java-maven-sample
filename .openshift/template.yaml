@@ -58,6 +58,7 @@ objects:
       name: ${NAME}
       weight: 100
     wildcardPolicy: None
+    termination: passthrough
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
