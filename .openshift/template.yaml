@@ -18,11 +18,13 @@ objects:
         kind: ImageStreamTag
         name: ${NAME}:latest
     source:
-      git:
-        uri: ssh://github.com/222bory/java-maven-sample.git
-      type: Git
-      sourceSecret:
-        name: ssh-keys
+      binary: 
+        asFile: helloworld-1.0-SNAPSHOT.jar
+      dockerfile: |-
+        FROM docker.io/openjdk:8-alpine
+        ARG JAR_FILE=helloworld-1.0-SNAPSHOT.jar
+        COPY ${JAR_FILE} myboot.jar
+        ENTRYPOINT ["java","-jar","/myboot.jar"]
     strategy:
       dockerStrategy:
         dockerfilePath: Dockerfile
