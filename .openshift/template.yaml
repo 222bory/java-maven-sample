@@ -19,10 +19,10 @@ objects:
         name: ${NAME}:latest
     source:
       git:
-        uri: https://github.com/222bory/java-maven-sample.git
+        uri: ssh://github.com/222bory/java-maven-sample.git
       type: Git
       sourceSecret:
-        name: my-git-secret
+        name: ssh-keys
     strategy:
       dockerStrategy:
         dockerfilePath: Dockerfile
