@@ -1,6 +1,8 @@
-# Base Alpine Linux based image with OpenJDK JRE only
-FROM openjdk:8-jre-alpine
-# copy application WAR (with libraries inside)
-COPY target/*.jar /data/springboot-helloworld/
-# specify default command
-CMD ["/usr/bin/java", "-jar", "helloworld-1.0-SNAPSHOT.jar"]
+# Dockerfile
+FROM adoptopenjdk/openjdk11:alpine-slim
+
+COPY src/target/helloworld-1.0-SNAPSHOT.jar helloworld-1.0-SNAPSHOT.jar
+COPY run.sh run.sh
+RUN  chmod 755 run.sh
+
+CMD ["java", "-jar", "helloworld-1.0-SNAPSHOT.jar"]
