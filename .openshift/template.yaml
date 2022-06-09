@@ -52,7 +52,7 @@ objects:
     namespace: ${NAMESPACE}
   spec:
     port:
-      targetPort: 8080-tcp
+      targetPort: 8080
     to:
       kind: Service
       name: ${NAME}
